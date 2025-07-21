@@ -1,0 +1,8 @@
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.exe.config
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.exe
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.pdb
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.AssemblyReference.cache
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.CoreCompileInputs.cache
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.exe
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.pdb
+C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.ResolveComReference.cache
