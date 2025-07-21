@@ -49,7 +49,8 @@ namespace ExcelParsingConverter
         {
             int colCount = oRng.Count;
 
-            for (int i = 1; i <= colCount; i++)
+            //20은 예시 값이고 이후 확인하기.
+            for (int i = 1; i <= 20; i++)
             {
                 Excel.Range cell = (Excel.Range)oSheet.Cells[1, i];
 
@@ -188,10 +189,43 @@ namespace ExcelParsingConverter
 
         public void ConversionData()
         {
+            _excelConvert = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+            foreach (var sheet in _excelData.Values)
+            {
+                Dictionary<string, Dictionary<string, string>> dicSheet = new Dictionary<string, Dictionary<string, string>>();
+                _excelConvert.Add(sheet.ToString(), dicSheet);
+                foreach (var column in sheet.Values)
+                {
+                    Dictionary<string, string> dicCol = new Dictionary<string, string>();
 
+                    for (int i = 1; i < column.Count; i++)
+                    {
+                        dicCol.Add(column[0], column[i]);
+                    }
+                    dicSheet.Add(sheet[1].ToString(), dicCol);
+                }
+            }
         }
         public void ShowOriginDictionary()
         {
+            foreach (var sheet in _excelConvert)
+            {
+                Console.WriteLine(sheet.Key.ToString() + "===============\n");
+                //시트 별로 column 별 한 줄씩 나열.
+                foreach (var column in sheet.Value)
+                {
+                    Console.WriteLine(column.Key.ToString() + "===============");
+                    foreach (var item in column.Value)
+                    {
+                        Console.Write("<" + item.Key + " : " + item.Value + ">\t");
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
+        public void ShowConvertDictionary()
+        {
+            //시트 별로 
             foreach (var sheet in _excelData.Values)
             {
                 //시트 별로 column 별 한 줄씩 나열.
@@ -206,10 +240,6 @@ namespace ExcelParsingConverter
 
                 Console.WriteLine();
             }
-        }
-        public void ShowConvertDictionary()
-        {
-            //시트 별로 
         }
     }
 }
