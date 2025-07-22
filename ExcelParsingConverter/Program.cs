@@ -11,11 +11,13 @@ namespace ExcelParsingConverter
         static void Main(string[] args)
         {
             ExcelConverter ec = new ExcelConverter();
-            ec.InitConvert("GameTableDoc.xlsx");
-            ec.ShowOriginDictionary();
-            ec.ConversionData();
-            ec.ShowConvertDictionary();
-
+            //ec.InitConvert("GameTableDoc.xlsx");
+            //ec.ShowOriginDictionary();
+            //ec.ConversionData();
+            ec.GetJsonFile("MonsterTable");
+            //ec.ShowConvertDictionary();
+            //ec.SaveTextFile('|');
+            //ec.SetJsonFile();
         }
     }
 }

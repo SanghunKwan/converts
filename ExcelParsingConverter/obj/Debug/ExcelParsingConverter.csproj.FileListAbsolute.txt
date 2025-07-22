@@ -6,3 +6,14 @@ C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\Exce
 C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.exe
 C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.pdb
 C:\ninja\ExcelParsing\ExcelParsingConverter\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.ResolveComReference.cache
+C:\learnUnity\converts\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.exe.config
+C:\learnUnity\converts\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.exe
+C:\learnUnity\converts\ExcelParsingConverter\bin\Debug\ExcelParsingConverter.pdb
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.AssemblyReference.cache
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.ResolveComReference.cache
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.csproj.CoreCompileInputs.cache
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.exe
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.pdb
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelParsingConverter.exe.config
+C:\learnUnity\converts\ExcelParsingConverter\obj\Debug\ExcelPar.8C89FBB5.Up2Date
+C:\learnUnity\converts\ExcelParsingConverter\bin\Debug\ClassLibrary1.dll

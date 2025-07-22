@@ -1,8 +1,10 @@
-﻿using System;
+﻿using LitJson;
+using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace ExcelParsingConverter
@@ -13,6 +15,7 @@ namespace ExcelParsingConverter
         Dictionary<int, Dictionary<int, List<string>>> _excelData;
         //시트 이름, 인덱스번호, 컬럼명, 셀 데이터
         Dictionary<string, Dictionary<string, Dictionary<string, string>>> _excelConvert;
+        Dictionary<int, string> dicIndexConvertSheetName;
 
         /// <summary>
         /// 지정 객체를 제거(해지)하는 함수.
@@ -47,10 +50,9 @@ namespace ExcelParsingConverter
         /// <returns>컬럼의 개수</returns>
         int ExcelFileColumnCount(Excel.Worksheet oSheet, Excel.Range oRng)
         {
-            int colCount = oRng.Count;
+            int colCount = oRng.Column;
 
-            //20은 예시 값이고 이후 확인하기.
-            for (int i = 1; i <= 20; i++)
+            for (int i = 1; i <= colCount; i++)
             {
                 Excel.Range cell = (Excel.Range)oSheet.Cells[1, i];
 
@@ -131,6 +133,7 @@ namespace ExcelParsingConverter
 
         void ExcelFileSaveToDictionary(Excel.Sheets oSheets)
         {
+            dicIndexConvertSheetName = new Dictionary<int, string>();
             for (int i = 1; i <= oSheets.Count; i++)
             {
                 List<string> columns;
@@ -156,7 +159,9 @@ namespace ExcelParsingConverter
                         {
                             count++;
                             if (item == null)
+                            {
                                 listData.Add("");
+                            }
                             else
                                 listData.Add(item.ToString());
                         }
@@ -166,6 +171,7 @@ namespace ExcelParsingConverter
                     ReleaseExcelObject(range);
                     ReleaseExcelObject(collCell);
                 }
+                dicIndexConvertSheetName.Add(i, oSheet.Name);
                 _excelData.Add(i, dicSheet);
             }
         }
@@ -175,6 +181,7 @@ namespace ExcelParsingConverter
             string fullName = Directory.GetCurrentDirectory() + "\\" + fileName;
 
             _excelData = new Dictionary<int, Dictionary<int, List<string>>>();
+            _excelConvert = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
 
             // 액셀로드하여 데이터 저장.
             if (!ExcelFileLoad(fullName))
@@ -189,25 +196,50 @@ namespace ExcelParsingConverter
 
         public void ConversionData()
         {
-            _excelConvert = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
-            foreach (var sheet in _excelData.Values)
+            foreach (var sheet in _excelData)
             {
                 Dictionary<string, Dictionary<string, string>> dicSheet = new Dictionary<string, Dictionary<string, string>>();
-                _excelConvert.Add(sheet.ToString(), dicSheet);
-                foreach (var column in sheet.Values)
-                {
-                    Dictionary<string, string> dicCol = new Dictionary<string, string>();
 
-                    for (int i = 1; i < column.Count; i++)
+                //시작값 : (sheet.Value[1][0]);
+                int count = sheet.Value[1].Count;
+                for (int i = 1; i < count; i++)
+                {
+                    Dictionary<string, string> dicRow = new Dictionary<string, string>();
+
+                    for (int j = 1; j <= sheet.Value.Count; j++)
                     {
-                        dicCol.Add(column[0], column[i]);
+                        dicRow.Add(sheet.Value[j][0], sheet.Value[j][i]);
                     }
-                    dicSheet.Add(sheet[1].ToString(), dicCol);
+
+                    dicSheet.Add(i.ToString(), dicRow);
+
+                    //키값 : sheet.Value[i][0]
+                    //value : sheet.Value[i][j]
                 }
+                _excelConvert.Add(dicIndexConvertSheetName[sheet.Key], dicSheet);
             }
         }
         public void ShowOriginDictionary()
         {
+            foreach (var sheet in _excelData.Values)
+            {
+                //시트 별로 column 별 한 줄씩 나열.
+                foreach (var column in sheet.Values)
+                {
+                    foreach (var item in column)
+                    {
+                        Console.Write(item);
+                        Console.Write("   ");
+                    }
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine();
+            }
+        }
+        public void ShowConvertDictionary()
+        {
+            //시트 별로 
             foreach (var sheet in _excelConvert)
             {
                 Console.WriteLine(sheet.Key.ToString() + "===============\n");
@@ -223,23 +255,89 @@ namespace ExcelParsingConverter
                 Console.WriteLine();
             }
         }
-        public void ShowConvertDictionary()
+
+        // 첫줄은 컬럼명이 저장.
+        // 각 시트 이름으로 .txt 파일이 만들어진다.
+        // #####(seperator)0000(seperator)###(seperator)###
+        // seperator는 각 자료의 구분자이다.
+        public void SaveTextFile(char seperator)
         {
-            //시트 별로 
-            foreach (var sheet in _excelData.Values)
+            string path = Directory.GetCurrentDirectory() + "\\";
+
+            foreach (var sheet in _excelConvert)
             {
-                //시트 별로 column 별 한 줄씩 나열.
-                foreach (var column in sheet.Values)
+                //파일명 : sheet.key
+                //내용 구성 : index|ASDF|ZXCV|WERt|...
+                using (StreamWriter sw = new StreamWriter(path + sheet.Key + ".txt"))
                 {
-                    foreach (var item in column)
+                    foreach (var column in sheet.Value)
                     {
-                        Console.Write(item);
-                        Console.Write("   ");
+                        int index = 0;
+                        foreach (var item in column.Value)
+                        {
+                            sw.Write(item.Value);
+                            index++;
+                            if (index != column.Value.Count)
+                                sw.Write(seperator);
+                        }
+                        sw.WriteLine();
+                    }
+
+                }
+            }
+        }
+
+
+        public void SetJsonFile()
+        {
+            //LitJson
+            foreach (var sheet in _excelConvert)
+            {
+                FileStream fStream = new FileStream(sheet.Key + ".Json", FileMode.Create);
+                using (StreamWriter sw = new StreamWriter(fStream, System.Text.Encoding.Unicode))
+                {
+                    if (sw != null)
+                    {
+                        JsonWriter writer = new JsonWriter(sw);
+                        writer.WriteObjectStart();
+                        writer.WritePropertyName(sheet.Key);
+
+                        writer.WriteArrayStart();
+                        foreach (var field in sheet.Value)
+                        {
+                            writer.WriteObjectStart();
+                            foreach (var cell in field.Value)
+                            {
+                                writer.WritePropertyName(cell.Key);
+                                writer.Write(cell.Value);
+                            }
+
+                            writer.WriteObjectEnd();
+                        }
+
+                        writer.WriteArrayEnd();
+                        writer.WriteObjectEnd();
+
                     }
                 }
-
-                Console.WriteLine();
             }
+        }
+
+        public void GetJsonFile(in string fileName)
+        {
+            FileStream fStream = new FileStream(fileName + ".Json", FileMode.Open);
+            using (StreamReader sr = new StreamReader(fStream))
+            {
+                JsonReader reader = new JsonReader(sr);
+
+                while (reader.Read())
+                {
+                    string asdf = (string)reader.Value;
+                    Console.WriteLine(asdf);
+                }
+
+            }
+            //_excelConvert.Add(fileName, null);
         }
     }
 }
