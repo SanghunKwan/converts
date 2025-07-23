@@ -1,5 +1,4 @@
 ﻿using LitJson;
-using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -270,21 +269,18 @@ namespace ExcelParsingConverter
                 //내용 구성 : index|ASDF|ZXCV|WERt|...
                 using (StreamWriter sw = new StreamWriter(path + sheet.Key + ".txt"))
                 {
+                    int lineNum = 0;
                     foreach (var column in sheet.Value)
                     {
-                        int index = 0;
-                        foreach (var item in column.Value)
-                        {
-                            sw.Write(item.Value);
-                            index++;
-                            if (index != column.Value.Count)
-                                sw.Write(seperator);
-                        }
-                        sw.WriteLine();
-                    }
+                        sw.Write(string.Join("|", column.Value.Values));
+                        lineNum++;
 
+                        if (lineNum != sheet.Value.Count)
+                            sw.WriteLine();
+                    }
                 }
             }
+
         }
 
 
